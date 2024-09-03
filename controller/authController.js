@@ -1,3 +1,4 @@
+const { signjwt } = require('../middleware/jwtAuthMiddleware');
 const user = require('../models/user')
 
 const signup = async(req,res)=>{
@@ -11,7 +12,9 @@ const signup = async(req,res)=>{
     }
     const newUser = new user({name,email,password,phone_number,address,postal_code});
     const response =newUser.save();
-    return res.json('Hello World');
+    const token =  signjwt(newUser._id);
+    console.log(token);
+    return res.json(newUser);
 };
 
 
@@ -28,7 +31,9 @@ const login = async(req,res)=>{
     if(!isMatch){
         return res.status(400).json("Password does'nt Matched");
     }
-    return res.json('Hello World');
+    const token =  signjwt(userExisted._id);
+    console.log(token);
+    return res.json(userExisted);
 };
 
 module.exports={signup,login};

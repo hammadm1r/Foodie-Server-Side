@@ -1,5 +1,4 @@
 const products = require("../models/products");
-
 const uploadProduct = async (req, res) => {
   try {
     const { name, price, description, category, quantity } = req.body;
@@ -29,11 +28,16 @@ const uploadProduct = async (req, res) => {
 
 const allProducts = async(req,res) =>{
     try {
-        const  products = await products.find();
-        return res.json(products);
+       const productList = await products.find();
+       
+       const productsWithImageURL = productList.map(product => ({
+        ...product._doc,
+        image: `${req.protocol}://${req.get('host')}/uploads/products/${product.image}`
+      }));
+        return res.json(productsWithImageURL);
 
     } catch (error) {
-        return res.status(500).json(error);
+      return res.status(500).json({ error: error.message });
     }
 }
 
