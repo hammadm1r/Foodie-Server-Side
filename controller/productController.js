@@ -1,4 +1,7 @@
 const products = require("../models/products");
+const { error } = require("../utils/responseWrapper");
+const { success } = require("../utils/responseWrapper");
+
 const uploadProduct = async (req, res) => {
   try {
     const { name, price, description, category, quantity } = req.body;

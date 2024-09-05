@@ -1,39 +1,63 @@
 const { signjwt } = require('../middleware/jwtAuthMiddleware');
 const user = require('../models/user')
+const { error } = require("../utils/responseWrapper");
+const { success } = require("../utils/responseWrapper");
 
 const signup = async(req,res)=>{
-    const {name,email,password,phone_number,address,postal_code} = req.body;
+    try {
+        const {name,email,password,phone_number,address,postal_code} = req.body;
     if(!name||!email||!password||!phone_number||!address||!postal_code){
-        return res.status(400).json({message:"Please fill all the fields"})
+        return res.send(error(400,'All fields are Required'));
     }
     const userExist = await user.findOne({email});
     if(userExist){
-       return res.status(400).json("User Already Existed");
+        return res.send(error(409,'User is Already Registered'));
     }
     const newUser = new user({name,email,password,phone_number,address,postal_code});
     const response =newUser.save();
     const token =  signjwt(newUser._id);
     console.log(token);
-    return res.json(newUser);
+    return res.send(success(201,"User Created Successfully"));
+    } catch (error) {
+        return res.send(error(500,e.message));
+    }
+    
 };
 
 
 const login = async(req,res)=>{
-    const {email,password} = req.body;
+    try {
+        const {email,password} = req.body;
     if(!email||!password){
         return res.status(400).json({message:"Please fill all the fields"})
     }
     const userExisted = await user.findOne({email});
     if(!userExisted){
-        return res.status(400).json("User does'nt Existed");
+        return res.send(error(403,"User does'nt Existed"));
     }
     const isMatch = await userExisted.comparePassword(password);
     if(!isMatch){
-        return res.status(400).json("Password does'nt Matched");
+        return res.send(error(403,'Incorrect Password'));
     }
     const token =  signjwt(userExisted._id);
-    console.log(token);
-    return res.json(userExisted);
+    return res.send(success(200, {token}));
+    } catch (e) {
+        return res.send(error(500,e.message));
+    }
+    
 };
 
-module.exports={signup,login};
+const profile = async(req,res) => {
+    try {
+        const user_Id = req.user.user_id
+        const userProfile = await user.findById(user_Id);
+        if(!userProfile){
+            return res.status(400).json({message:"Profile Not Found"})
+        }
+        return res.send(success(200,{userProfile}));
+    } catch (error) {
+        return res.send(error(500,e.message));
+    }
+}
+
+module.exports={signup,login,profile};
