@@ -50,4 +50,21 @@ const removefromcart = async(req,res) => {
         return res.status(500).json(error);
     }
 }
-module.exports ={addtocart,removefromcart};
+
+const getCartInfo = async(req,res) => {
+    try {
+        const user_Id = req.user.user_id;
+        
+        const userProfile =await user.findById(user_Id).populate('cartItems.product_Id');
+
+        return res.json({
+            cart: userProfile.cartItems.map(item => ({
+                product: item.product_Id,  // Populated product details
+                quantity: item.quantity
+            }))
+        });
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
+module.exports ={addtocart,removefromcart,getCartInfo};
