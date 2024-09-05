@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors');
 const morgan = require('morgan');
 const productRouter = require('./router/productRouter');
-
+const cart = require('./router/cart');
 ///// Require /////
 
 ////  Configuration ////
@@ -34,5 +34,6 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/products",productRouter)
 app.use("/auth",authentication)
+app.use("/cart",cart);
 app.get("/",(req,res)=>{res.send('Hello World')});
 app.listen(PORT);

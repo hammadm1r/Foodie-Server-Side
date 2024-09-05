@@ -26,7 +26,21 @@ const userSchema = new mongoose.Schema({
     password :{
         type:String,
         required:true
-    }
+    },
+    cartItems :[{
+        product_Id :{
+            type: Schema.Types.ObjectId,
+            ref:'product',
+        },
+        quantity :{
+            type:Number,
+            default:1,
+            max:10,
+        }
+}]
+
+},{
+    timestamps:true
 })
 
 userSchema.pre('save',async function (next){
