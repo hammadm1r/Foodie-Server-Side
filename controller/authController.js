@@ -17,7 +17,7 @@ const signup = async(req,res)=>{
     const response =newUser.save();
     const token =  signjwt(newUser._id);
     console.log(token);
-    return res.send(success(201,"User Created Successfully"));
+    return res.send(success(201,{token}));
     } catch (error) {
         return res.send(error(500,e.message));
     }
@@ -60,4 +60,16 @@ const profile = async(req,res) => {
     }
 }
 
-module.exports={signup,login,profile};
+const verification = async(req,res) => {
+    try {
+        const user_Id = req.user.user_id
+        if(!user_Id){
+            return res.send(error(400,false));
+        }
+        return res.send(success(200,true));
+    }catch (error) {
+        return res.send(error(500,e.message));
+    }
+}
+
+module.exports={signup,login,profile,verification};
