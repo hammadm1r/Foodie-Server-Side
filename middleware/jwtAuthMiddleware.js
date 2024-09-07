@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const { error } = require("../utils/responseWrapper");
+const { success } = require("../utils/responseWrapper");
 
 const verifyjwt = (req,res,next) =>{
     if (
@@ -6,8 +8,8 @@ const verifyjwt = (req,res,next) =>{
         !req.headers.authorization ||
         !req.headers.authorization.startsWith("Bearer")
       ) {
-         return res.status(401).send('Authorization Header is Required');
-        //   return res.send(error(401,'Authorization Header is Required'));
+        //  return res.status(401).send('Authorization Header is Required');
+        return res.send(error(401,'Authorization Header is Required'));
       }
       const token = req.headers.authorization.split(" ")[1];
 
@@ -15,8 +17,8 @@ const verifyjwt = (req,res,next) =>{
         const response = jwt.verify(token,process.env.SECRET_KEY);
         req.user = response;
         next();
-      } catch (error) {
-        return res.status(401).json({error:'Invalid token'});
+      } catch (e) {
+        return res.send(error(401,'Invalid Tokken'));
       }
 
 }

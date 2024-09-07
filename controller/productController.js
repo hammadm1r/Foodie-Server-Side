@@ -20,7 +20,7 @@ const uploadProduct = async (req, res) => {
       quantity,
     });
     if(req.file){
-        newProduct.image = req.file.filename;
+        newProduct.image = `${req.protocol}://${req.get('host')}/uploads/products/${req.file.filename}`;
     }
     const response = newProduct.save();
     return res.json("Hello World");
@@ -32,12 +32,7 @@ const uploadProduct = async (req, res) => {
 const allProducts = async(req,res) =>{
     try {
        const productList = await products.find();
-       
-       const productsWithImageURL = productList.map(product => ({
-        ...product._doc,
-        image: `${req.protocol}://${req.get('host')}/uploads/products/${product.image}`
-      }));
-        return res.json(productsWithImageURL);
+        return res.json(productList);
 
     } catch (error) {
       return res.status(500).json({ error: error.message });
