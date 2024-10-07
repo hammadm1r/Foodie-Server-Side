@@ -14,14 +14,17 @@ const signup = async(req,res)=>{
         return res.send(error(409,'User is Already Registered'));
     }
     const newUser = new user({name,email,password,phone_number,address,postal_code});
-    const response =newUser.save();
+    if(req.file){
+        newUser.image = `/uploads/products/${req.file.filename}`;
+    }
+    console.log('hello world')
+    await newUser.save();
     const token =  signjwt(newUser._id);
     console.log(token);
     return res.send(success(201,{token}));
-    } catch (error) {
+    } catch (e) {
         return res.send(error(500,e.message));
     }
-    
 };
 
 
