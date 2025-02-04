@@ -9,8 +9,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const productRouter = require("./router/productRouter");
 const cart = require("./router/cart");
-const stripe =process.env.PRIVATE_STRIPE_KEY
-);
+const stripe =process.env.PRIVATE_STRIPE_KEY;
 ///// Require /////
 
 ////  Configuration ////

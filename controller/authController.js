@@ -57,6 +57,10 @@ const profile = async(req,res) => {
         if(!userProfile){
             return res.status(400).json({message:"Profile Not Found"})
         }
+        // if(profile.image){
+        //     profile.image = url
+        // }
+        // console.log(userProfile);
         return res.send(success(200,{userProfile}));
     } catch (error) {
         return res.send(error(500,e.message));
